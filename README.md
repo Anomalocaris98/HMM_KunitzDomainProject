@@ -115,21 +115,12 @@ Use the provided script `performance.py` to compute:
 - True Positive Rate (TPR)
 - Precision (PPV)
 
----
-
-## Optional: Sequence-Based HMM
-- Align using `muscle`
-- Build HMM as in step 3
-- Evaluate as above
-
----
 
 ## Output Files Summary
 
 | File | Description |
 |------|-------------|
 | `*_strali.hmm` | HMM model from structure-based alignment |
-| `*_seqali.hmm` | HMM from MUSCLE sequence alignment |
 | `*.fasta` | Benchmark sequence sets |
 | `*.tbl` | Raw hmmsearch output |
 | `*_results.txt` | Performance metrics |
@@ -140,7 +131,6 @@ Use the provided script `performance.py` to compute:
 ## Notes
 
 - You can generate all datasets independently from PDB and UniProt using provided filters.
-- The structural alignment-based HMM usually outperforms sequence-only HMMs on distant homologs.
 
 ---
 
