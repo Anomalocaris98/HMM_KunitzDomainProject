@@ -1,4 +1,3 @@
-# HMM_KunitzDomainProject
 # BPTI/Kunitz Domain Detection Using Hidden Markov Models (HMM)
 
 # Project Overview
