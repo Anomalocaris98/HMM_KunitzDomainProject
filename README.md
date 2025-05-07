@@ -1,6 +1,5 @@
-# BPTI/Kunitz Domain Detection Using Hidden Markov Models (HMM)
+# Kunitz Domain Detection Using Hidden Markov Models (HMM)
 
-# Project Overview
 This project implements a computational approach to detect BPTI/Kunitz domains in proteins using Hidden Markov Models (HMMs). It combines structural bioinformatics with probabilistic modeling to identify conserved patterns characteristic of the Kunitz domain.
 
 # Main Goals
