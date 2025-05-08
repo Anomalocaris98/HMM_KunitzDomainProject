@@ -34,7 +34,6 @@ conda install -c conda-forge biopython
 | **CD-HIT**   | Remove redundancy in training sequences |
 | **HMMER**    | Build and use HMMs (`hmmbuild`, `hmmsearch`) |
 | **BLAST+**   | Identify and filter sequence similarity to prevent overlap |
-| **MUSCLE**   | (Optional) Sequence-based multiple alignment |
 | **Biopython**| FASTA manipulation via `get_seq.py` |
 
 ---
