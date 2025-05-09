@@ -38,23 +38,6 @@ conda install -c conda-forge biopython
 
 ---
 
-## Project Structure
-
-```
-BPTI_Kunitz_HMM_Detection/
-├── data/
-│   ├── pdb_structures/    # Cleaned, filtered PDB sequences
-│   ├── uniprot_sets/      # Positive and negative sets
-│   └── alignments/        # Structure/sequence alignments
-├── hmm_model/
-│   └── hmm_results/       # Search output files
-├── scripts/               # Processing scripts
-├── results/               # Evaluation tables and plots
-├── report/                # Final report and supplementary
-├── README.md
-└── LICENSE
-```
-
 ---
 
 ## Pipeline Steps
