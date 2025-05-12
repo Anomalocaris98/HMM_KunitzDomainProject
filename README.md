@@ -44,49 +44,56 @@ conda install -c conda-forge biopython
 
 ### 0. Extract Representative Kunitz Sequences from PDB
 - Use advanced search:
-  - Pfam ID: PF00014
-  - Resolution ≤ 2.0 Å
-  - Sequence length 45–80 amino acids
-- Use `cd-hit` to cluster and reduce redundancy:
+Data Collection Resolution <= 3.5 AND ( Identifier = "PF00014" AND Annotation Type = "Pfam" ) AND Polymer Entity Sequence Length <= 80 AND Polymer Entity Sequence Length >= 45
+
+This will output a .CSV file. Then execute the following bash script:
 ```bash
-cd-hit -i all_kunitz.fasta -o pdb_kunitz_rp.fasta -c 0.95 -n 5
+bash script_recover_representative_kunitz.sh
 ```
-### 1. Extract Representative Kunitz Sequences from PDB
+This will do the following operations: 
+- Extract sequences of PF00014 domains from the PDB custom report
+- Cluster the sequences using CD-HIT at 90% identity threshold
+- Extract the most representative ID from each cluster
+- Retrieve the sequences of the representative IDs and store them in a new FASTA file
+- Generate the PDBefold file (convert IDs to the expected format: PDB:CHAIN):  `tmp_pdb_efold_ids.txt`
+- BEFORE GOING TO THE NEXT STEP: check in the `tmp_pdb_efold_ids.txt` file sequences that are too long and remove them
+
+---
+### 1. Download the full Swiss-Prot protein dataset in FASTA format, used to extract negative sets and full Kunitz reference
+- Go to https://www.uniprot.org/ and save the FASTA file as `uniprot_sprot.fasta`
+
+---
+### 2. Download all Kunitz proteins in FASTA format
+
+- Go to https://www.uniprot.org/ and save the FASTA file as `all_kunitz.fasta`
+
 ---
 
-### 2. Structural Alignment
+### 3. Structural Alignment
+
 Use PDBeFold :
-- Input: `pdb_kunitz_rp.fasta` (PDB IDs)
-- Output: Aligned FASTA file `pdb_kunitz_rp_strali.fasta`
+- Input: `tmp_pdb_efold_ids.txt` (PDB IDs)
+- Output: Aligned FASTA file `pdb_kunitz_rp.ali`
 
 ---
 
 ### 3. Build HMM from Structural Alignment
+
 ```bash
-hmmbuild hmm_model/pdb_kunitz_rp_strali.hmm data/alignments/pdb_kunitz_rp_strali.fasta
+bash create_hmm_str.sh
+bash create_testing_sets.sh
 ```
+- Build a structural HMM from the PDBeFold structural alignment
 
----
+- Remove training sequences from the full dataset and generate random subsets of positive and negative sequences, which will be used to create test sets
 
-### 4. Prepare Benchmark Sets from UniProt
-- **Positive set**: All Swiss-Prot entries with PF00014
-- **Negative set**: All other Swiss-Prot proteins
-- Use `blastpgp` to filter positives with high identity to training set:
-```bash
-blastpgp -i positives.fasta -d pdb_kunitz_rp.fasta -m 8 -o blast_overlap.txt
-```
+- Automatically identify the optimal E-value thresholds via MCC evaluation (2-fold CV)
 
----
+- Perform evaluation on: Set 1, using Set 2’s threshold; Set 2, using Set 1’s threshold; Combined Set 1 + Set 2, using both thresholds for overall assessment
 
-### 5. HMM Search and Cross-Validation
-- Split positives/negatives into two folds
-- For each fold:
-  - Run `hmmsearch`
-  - Determine best E-value threshold (based on MCC)
-  - Evaluate on held-out fold
-```bash
-hmmsearch --noali --max --tblout output.tbl -Z 1 --domZ 1 hmm_model/*.hmm test_set.fasta
-```
+- Report MCC, precision, recall, and identify false positives and false negatives
+
+Write detailed results to `hmm_results_strali.txt`
 
 ---
 
@@ -96,23 +103,27 @@ Use the provided script `performance.py` to compute:
 - Accuracy (Q2)
 - True Positive Rate (TPR)
 - Precision (PPV)
+---
+### 7. Plot the confusion matrices for each run resulting in the `hmm_results_strali.txt` file
 
-
-## Output Files Summary
-
-| File | Description |
-|------|-------------|
-| `*_strali.hmm` | HMM model from structure-based alignment |
-| `*.fasta` | Benchmark sequence sets |
-| `*.tbl` | Raw hmmsearch output |
-| `*_results.txt` | Performance metrics |
-| `*_class` | Binary classification labels (0/1) |
-
+Execute the python script `confusion_matrix.py `, put in the values for FN (false negatives),FP (false positives),TN (true negatives) and TP (true positives) variables. The script will output a .png image with the plotted confusion matrix. The script has to be done for each set of values.
 ---
 
-## Notes
+### Output Files Summary
 
-- You can generate all datasets independently from PDB and UniProt using provided filters.
+- `hmm_results_strali.txt` and `hmm_results_seqali.txt` contain:
+ - The best E-value thresholds selected by maximizing the Matthews Correlation Coefficient (MCC)
+ -Performance metrics for each test set and overall, calculated using the E-value that yielded the highest MCC, based on either full sequence or best single domain evaluations
+ -Lists of false positives and false negatives
+- `neg_1.fasta` and `neg_2.fasta`: FASTA files of non-Kunitz sequences used respectively as the negative set 1 and set 2.
+- `pos_1.fasta` and `pos_2.fasta`: FASTA files of Kunitz (positive) sequences used in set 1 and set 2.
+- `pdb_kunitz_rp_clean.fasta`: Cleaned representative Kunitz sequences used for both structural and sequence alignments (after filtering for length).
+- `pdb_kunitz_rp_seqali.fasta` and `pdb_kunitz_rp_seqali.hmm`: The multiple sequence alignment and resulting HMM model produced using MUSCLE.
+- `pdb_kunitz_rp_strali.fasta` and `pdb_kunitz_rp_strali.hmm`: The multiple structure alignment and resulting HMM model built from PDBeFold.
+- `set_1_strali.class` and `set_2_strali.class`: Classification results from hmmsearch for set 1 and set 2 (structure-based model).
+- `temp_overall.class`: Classification results for the combined dataset (positive + negative), used to estimate overall performance for each threshold.
+
+
 
 ---
 
