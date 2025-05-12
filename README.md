@@ -107,6 +107,7 @@ Use the provided script `performance.py` to compute:
 ### 7. Plot the confusion matrices for each run resulting in the `hmm_results_strali.txt` file
 
 Execute the python script `confusion_matrix.py `, put in the values for FN (false negatives),FP (false positives),TN (true negatives) and TP (true positives) variables. The script will output a .png image with the plotted confusion matrix. The script has to be done for each set of values.
+
 ---
 
 ### Output Files Summary
