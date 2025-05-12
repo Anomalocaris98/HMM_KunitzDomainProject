@@ -42,7 +42,7 @@ conda install -c conda-forge biopython
 
 ## Pipeline Steps
 
-### 1. Extract Representative Kunitz Sequences from PDB
+### 0. Extract Representative Kunitz Sequences from PDB
 - Use advanced search:
   - Pfam ID: PF00014
   - Resolution ≤ 2.0 Å
@@ -51,7 +51,7 @@ conda install -c conda-forge biopython
 ```bash
 cd-hit -i all_kunitz.fasta -o pdb_kunitz_rp.fasta -c 0.95 -n 5
 ```
-
+### 1. Extract Representative Kunitz Sequences from PDB
 ---
 
 ### 2. Structural Alignment
