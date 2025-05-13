@@ -52,7 +52,9 @@ Press the custom report with the following flags:
 - Sequence
 - Annotation Identifier
 - Data collection resolution
+  
 This will output a .CSV file. Then execute the following bash script:
+
 ```bash
 bash script_recover_representative_kunitz.sh
 ```
