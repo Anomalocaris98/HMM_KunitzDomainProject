@@ -45,7 +45,13 @@ conda install -c conda-forge biopython
 ### 0. Extract Representative Kunitz Sequences from PDB
 - Use advanced search:
 Data Collection Resolution <= 3.5 AND ( Identifier = "PF00014" AND Annotation Type = "Pfam" ) AND Polymer Entity Sequence Length <= 80 AND Polymer Entity Sequence Length >= 45
-
+Press the custom report with the following flags:
+- PDB ID
+- Entity ID
+- Auth Asym ID
+- Sequence
+- Annotation Identifier
+- Data collection resolution
 This will output a .CSV file. Then execute the following bash script:
 ```bash
 bash script_recover_representative_kunitz.sh
